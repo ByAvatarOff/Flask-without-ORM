@@ -1,0 +1,7 @@
+{% extends 'main.html' %}
+{% block content %}
+{% for pos in position %}
+{{ pos['id'] }}
+{{ pos['position_name'] }}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+    {% block static %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% endblock %}
+{% block content %}
+<ul id="navbar">
+  <li><a href="#">Main</a></li>
+  <li><a href="#">Add employee</a></li>
+  <li><a href="#">Add department</a></li>
+  <li><a href="#">Add position</a></li>
+</ul>
+<h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</h1>
+{% endblock %}

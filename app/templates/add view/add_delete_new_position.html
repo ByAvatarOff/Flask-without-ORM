@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+{% block static %}
+<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <ul class="flex-outer">
+            <li>
+                <label for="first-name">{{ form.position_name.label }}</label>
+                <div id="first-name">{{ form.position_name }}</div>
+                {% for error in form.position_name.errors %}
+                <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </li>
+            <li>
+                <label for="last-name"> {{ form.description.label }}</label>
+                <div id="last-name"> {{ form.description }}</div>
+                {% for error in form.description.errors %}
+                <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </li>
+            <li>
+                <button type="submit">{{ form.submit() }}</button>
+            </li>
+        </ul>
+    </form>
+</div>
+{% endblock %}
