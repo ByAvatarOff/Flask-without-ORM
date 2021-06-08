@@ -1,11 +1,3 @@
-
-body {
-  font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
-  background: #3AAFAB;
-  color: #fff;
-  padding: 5    0px 0;
-}
-
 .container {
   width: 80%;
   max-width: 1200px;

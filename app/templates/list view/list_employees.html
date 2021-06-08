@@ -1,25 +1,39 @@
 {% extends 'main.html' %}
+    {% block static %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+    {% endblock %}
 {% block content %}
-<table>
-<tr>
-    <th>fio</th>
-    <th>current position</th>
-    <th>current department</th>
-    <th>start work</th>
-    <th>years of work</th>
-    <th>count of position</th>
-    <th>count of department</th>
-</tr>
+<table class="resp-tab">
+    <thead>
+    <tr>
+        <th>fio</th>
+        <th>current position</th>
+        <th>current department</th>
+        <th>start work</th>
+        <th>years of work</th>
+        <th>count of position</th>
+        <th>count of department</th>
+    </tr>
+    </thead>
     {% for field in result_join %}
-<tr>
-    <td>{{ field['fio'] }}</td>
-    <td>{{ field['position_name'] }}</td>
-    <td>{{ field['department_name'] }}</td>
-    <td>{{ field['date_start'] }}</td>
-    <td>{{ field['diff_year'] }}</td>
-    <td>{{ field['count_pos'] }}</td>
-    <td>{{ field['count_dep'] }}</td>
-</tr>
-{% endfor %}
+    <tbody>
+    <tr>
+        <td>{{ field['fio'] }}</td>
+        <td>{{ field['position_name'] }}</td>
+        <td>{{ field['department_name'] }}</td>
+        <td>{{ field['date_start'] }}</td>
+        <td>{{ field['diff_year'] }}</td>
+        <td>{{ field['count_pos'] }}</td>
+        <td>{{ field['count_dep'] }}</td>
+        <td>
+            <button><a href="{{ url_for('update_employee', employee_id=field['id']) }}">Изменить</a></button>
+        </td>
+        <td>
+            <button class="test"><a href="{{ url_for('delete_employee', employee_id=field['id']) }}">Удалить</a></button>
+        </td>
+    </tr>
+    </tbody>
+    {% endfor %}
 </table>
+
 {% endblock %}

@@ -1,8 +1,7 @@
 import sqlite3
-
 from flask import g, current_app
-
 from app import app
+import typing
 
 
 def get_db():
@@ -12,7 +11,6 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
-
     return g.db
 
 
@@ -23,21 +21,13 @@ def close_connection(exception):
         db.close()
 
 
-def select_requests(command):
+def select_requests(command: str) -> typing.List[sqlite3.Row]:
     data = get_db()
     select = data.execute(command).fetchall()
     return select
 
 
-# def select_requests_with_param(command, parameters):
-#     data = get_db()
-#     select = data.execute(command, parameters).fetchall()
-#     if select is not None:
-#         return select
-#     return None
-
-
-def create_update_delete_request(command, parameters):
+def create_update_delete_request(command: str, parameters: typing.Union[str, int]) -> bool:
     data = get_db()
     if data.execute(command, parameters) is not None:
         data.commit()
@@ -45,17 +35,16 @@ def create_update_delete_request(command, parameters):
     return False
 
 
-def get_employee(employee_id):
+def get_employee(employee_id: int) -> sqlite3.Row:
     data = get_db()
-    t = data.execute('''SELECT department_id, position_id FROM employee WHERE employee.id = ?''',
+    select = data.execute('''SELECT department_id, position_id FROM employee WHERE employee.id = ?''',
                      (employee_id, )).fetchone()
-    return t
+    return select
 
 
-def list_position():
+def list_position() -> typing.List[typing.Tuple[int, int]]:
     with app.app_context():
         pos_choices = []
-
         select = select_requests('SELECT * FROM position')
         if select:
             for row in select:
@@ -63,7 +52,7 @@ def list_position():
         return pos_choices
 
 
-def list_department():
+def list_department() -> typing.List[typing.Tuple[int, int]]:
     with app.app_context():
         dep_choices = []
         select = select_requests('SELECT * FROM department')

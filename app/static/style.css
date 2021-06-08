@@ -1,3 +1,10 @@
+body {
+  font: normal 18px/1.5, sans-serif;
+  background: #3AAFAB;
+  color: #fff;
+  padding: 5 0px 0;
+}
+
 #navbar {
   margin: 0;
   padding: 0;
@@ -20,7 +27,7 @@
   text-decoration: none;
   font-weight: bold;
   display: inline-block;
-  width: 100px;
+  width: 70px;
 }
 #navbar a:hover {
   border-radius: 20px 5px;
