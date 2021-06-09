@@ -14,20 +14,36 @@ def get_db():
     return g.db
 
 
-@app.teardown_appcontext  # close connection after any wev request
+@app.teardown_appcontext
 def close_connection(exception):
+    """
+    Close connection after any wev request
+    :param exception: str
+    :return: None
+    """
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 
 def select_requests(command: str) -> typing.List[sqlite3.Row]:
+    """
+    Get connection and sql command and return response of table
+    :param command:
+    :return:
+    """
     data = get_db()
     select = data.execute(command).fetchall()
     return select
 
 
-def create_update_delete_request(command: str, parameters: typing.Union[str, int]) -> bool:
+def create_update_request(command: str, parameters: typing.Union[typing.Any, typing.Any]) -> bool:
+    """
+    Get connection and sql command and record changes or new record row on table
+    :param command:
+    :param parameters:
+    :return:
+    """
     data = get_db()
     if data.execute(command, parameters) is not None:
         data.commit()
@@ -36,13 +52,22 @@ def create_update_delete_request(command: str, parameters: typing.Union[str, int
 
 
 def get_employee(employee_id: int) -> sqlite3.Row:
+    """
+    Get id and connection and return one record of employee
+    :param employee_id:
+    :return:
+    """
     data = get_db()
     select = data.execute('''SELECT department_id, position_id FROM employee WHERE employee.id = ?''',
-                     (employee_id, )).fetchone()
+                          (employee_id, )).fetchone()
     return select
 
 
 def list_position() -> typing.List[typing.Tuple[int, int]]:
+    """
+    Return list of tuple with info about position_name and id
+    :return:
+    """
     with app.app_context():
         pos_choices = []
         select = select_requests('SELECT * FROM position')
@@ -53,6 +78,10 @@ def list_position() -> typing.List[typing.Tuple[int, int]]:
 
 
 def list_department() -> typing.List[typing.Tuple[int, int]]:
+    """
+    Return list of tuple with info about department_name and id
+    :return:
+    """
     with app.app_context():
         dep_choices = []
         select = select_requests('SELECT * FROM department')

@@ -8,7 +8,7 @@
 }
 .resp-tab th, .resp-tab td {
     padding: 10px 20px;
-    font-size: 13px;
+    font-size: 15px;
     border: none;
     font-family: Verdana, sans-serif;
     border: 1px solid #337AB7;
@@ -37,4 +37,10 @@
     position: absolute;
     top: 0;
     left: 0;
+
+}
+
+a:visited, a:link {
+text-decoration: None;
+color: black;
 }

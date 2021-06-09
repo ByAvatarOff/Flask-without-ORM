@@ -47,8 +47,8 @@ def register() -> Response:
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        new_db.create_update_delete_request('INSERT INTO user (username, password) VALUES (?, ?)',
-                                            (username, generate_password_hash(password)))
+        new_db.create_update_request('INSERT INTO user (username, password) VALUES (?, ?)',
+                                     (username, generate_password_hash(password)))
         return redirect('/login')
     return render_template('auth/register.html', form=form, username=form.username.data, password=form.password.data)
 
@@ -126,9 +126,9 @@ def add_position() -> Response:
     """
     form = AddPositionForm()
     if form.validate_on_submit():
-        new_db.create_update_delete_request('INSERT INTO position (position_name, description)'
-                                            'VALUES (?, ?)',
-                                            (form.position_name.data, form.description.data))
+        new_db.create_update_request('INSERT INTO position (position_name, description)'
+                                     'VALUES (?, ?)',
+                                     (form.position_name.data, form.description.data))
         flash('You successful add position')
     return render_template('add view/add_delete_new_position.html', form=form)
 
@@ -141,8 +141,8 @@ def delete_position(position_id: int) -> Response:
     :param position_id: integer
     :return:
     """
-    delete_request = new_db.create_update_delete_request('DELETE FROM position WHERE id = ?',
-                                                         (position_id, ))
+    new_db.create_update_request('DELETE FROM position WHERE id = ?',
+                                 (position_id, ))
     return redirect(url_for('list_positions'))
 
 
@@ -156,9 +156,9 @@ def add_department() -> Response:
     dep = new_db.select_requests('SELECT * FROM department')
     form = AddDepartmentForm()
     if form.validate_on_submit():
-        new_db.create_update_delete_request('INSERT INTO department (department_name, parent_id)'
-                                            'VALUES (?, ?)',
-                                            (form.department_name.data, form.parent_id.data))
+        new_db.create_update_request('INSERT INTO department (department_name, parent_id)'
+                                     'VALUES (?, ?)',
+                                     (form.department_name.data, form.parent_id.data))
         flash('You successful add department')
     return render_template('add view/add_delete_new_department.html', form=form, department=dep)
 
@@ -171,7 +171,7 @@ def delete_department(department_id: int) -> Response:
     :param department_id: integer
     :return:
     """
-    delete_request = new_db.create_update_delete_request('DELETE FROM department WHERE id = ?', (department_id, ))
+    new_db.create_update_request('DELETE FROM department WHERE id = ?', (department_id, ))
     return redirect(url_for('index'))
 
 
@@ -189,10 +189,9 @@ def add_employee() -> Response:
         ).fetchone() is not None:
             flash('Please enter a different fio')
         else:
-            new_db.create_update_delete_request('INSERT INTO employee (fio, position_id, department_id, date_start)'
-                                                'VALUES (?, ?, ?, ?)',
-                                                (form.fio.data, form.position_id.data, form.department_id.data,
-                                                 date.today()))
+            new_db.create_update_request('INSERT INTO employee (fio, position_id, department_id, date_start)'
+                                         'VALUES (?, ?, ?, ?)',
+                                         (form.fio.data, form.position_id.data, form.department_id.data, date.today()))
             flash('You successful add employee')
 
     return render_template('add view/add_delete_new_employees.html', form=form)
@@ -206,17 +205,17 @@ def delete_employee(employee_id: int) -> Response:
     :param employee_id: integer
     :return:
     """
-    new_db.create_update_delete_request('DELETE FROM employee WHERE id = ?', (employee_id, ))
+    new_db.create_update_request('DELETE FROM employee WHERE id = ?', (employee_id, ))
     return redirect(url_for('list_employees'))
 
 
 def count_add(value_position: int, value_department: int, employee_id: int, form: typing.Dict):
     if int(value_position) != int(form.position_id.data):
-        new_db.create_update_delete_request('UPDATE count_dep_pos_employee SET count_dep = count_dep + 1 '
-                                            'WHERE employee_id = ?', (employee_id,))
+        new_db.create_update_request('UPDATE count_dep_pos_employee SET count_dep = count_dep + 1 '
+                                     'WHERE employee_id = ?', (employee_id,))
     if int(value_department) != int(form.department_id.data):
-        new_db.create_update_delete_request('UPDATE count_dep_pos_employee SET count_pos = count_pos + 1 '
-                                            'WHERE employee_id = ?', (employee_id,))
+        new_db.create_update_request('UPDATE count_dep_pos_employee SET count_pos = count_pos + 1 '
+                                     'WHERE employee_id = ?', (employee_id,))
 
 
 @app.route('/employee/update/<int:employee_id>', methods=['GET', 'POST'])
@@ -233,14 +232,14 @@ def update_employee(employee_id: int) -> Response:
     value_position = value['position_id']
     value_department = value['department_id']
     if form.validate_on_submit():
-        new_db.create_update_delete_request('UPDATE employee SET department_id = ?, position_id = ? WHERE id = ?',
-                                            (form.department_id.data, form.position_id.data, employee_id))
+        new_db.create_update_request('UPDATE employee SET department_id = ?, position_id = ? WHERE id = ?',
+                                     (form.department_id.data, form.position_id.data, employee_id))
         if new_db.get_db().execute('SELECT employee_id FROM count_dep_pos_employee WHERE employee_id = ?',
                                    (employee_id, )).fetchone() is not None:
             count_add(value_position, value_department, employee_id, form)
         else:
-            new_db.create_update_delete_request('INSERT INTO count_dep_pos_employee (employee_id)'
-                                                'VALUES (?)', (employee_id, ))
+            new_db.create_update_request('INSERT INTO count_dep_pos_employee (employee_id)'
+                                         'VALUES (?)', (employee_id, ))
             count_add(value_position, value_department, employee_id, form)
     return render_template('add view/update_employee.html', form=form)
 
@@ -279,6 +278,10 @@ def list_employees() -> Response:
 
 @app.route('/department/stats')
 def statistic_department() -> Response:
+    """
+    Statistic about department and count working people in it
+    :return:
+    """
     form = DepartmentViewForm()
     select = new_db.select_requests('WITH RECURSIVE CTE_TEST(id, department_name, parent_id, LevelParent)'
                                     ' AS (select id, department_name, parent_id, 0 as LevelParent'
