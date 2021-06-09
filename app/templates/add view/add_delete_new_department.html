@@ -17,7 +17,7 @@
             </li>
             <li>
                 <label for="last-name">{{ form.parent_id.label }}</label>
-                <div id="last-name">{{ form.parent_id }}</div>
+                <div id="last-name">{{ form.parent_id  }}</div>
                 {% for error in form.parent_id.errors %}
                 <span style="color: red">{{ error }}</span>
                 {% endfor %}
