@@ -4,12 +4,15 @@
 ### User login: `admin`, password: `admin`
 ## Urls endpoint
 - `/login`
-- `/register`
+- `/register`   
 - `/position/add`
+- `/positions`
 - `/position/delete/<int:position_id>`
 - `/department`
-- `/employee/delete/<int:employee_id>`
-- `/positions`
+- `/department/add`
 - `/department/delete/<int:department_id>`
-- `/employee`
+- `/employees`
+- `/employee/delete/<int:employee_id>`
+- `/employee/update/<int:employee_id>`
+- `/department/stats`
 

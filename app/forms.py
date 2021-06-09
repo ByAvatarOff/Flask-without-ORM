@@ -20,9 +20,9 @@ class RegisterForm(FlaskForm):
     password2 = PasswordField('Repeat password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-    def validate_username(self, username):
+    def validate_username(self, username: str):
         if new_db.get_db().execute(
-                'SELECT id FROM user WHERE username = ?', (username,)
+                'SELECT id FROM user WHERE username = ?', (str(username), )
         ).fetchone() is not None:
             raise ValidationError('Please use a different username')
 
@@ -51,12 +51,6 @@ class AddEmployeeForm(FlaskForm):
     department_id = SelectField('Department name', choices=dep_choices)
     submit = SubmitField('Add employee')
 
-    # def validate_fio(self, fio: str):
-    #     if new_db.get_db().execute(
-    #             'SELECT fio FROM employee WHERE fio = ?', (str(fio), )
-    #     ).fetchone() is not None:
-    #         raise ValidationError('Enter a different fio')
-
 
 class UpdateEmployeeForm(FlaskForm):
     dep_choices = new_db.list_department()
@@ -65,3 +59,9 @@ class UpdateEmployeeForm(FlaskForm):
     position_id = SelectField('Position name', choices=pos_choices)
     department_id = SelectField('Department name', choices=dep_choices)
     submit = SubmitField('Update employee')
+
+
+class DepartmentViewForm(FlaskForm):
+    dep_choices = new_db.list_department()
+    department_id = SelectField('Department name', choices=dep_choices)
+    submit = SubmitField('View statistic about department')

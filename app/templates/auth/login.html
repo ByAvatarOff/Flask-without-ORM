@@ -1,23 +1,51 @@
-{% extends 'main.html' %}
-{% block content %}
-<form action="" method="post">
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.username.label }}<br>
-    {{ form.username }}
-    {% for error in form.username.errors %}
-    <span style="color: red">{{ error }}</span>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    {% block static %}
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    {% endblock %}
+</head>
+<body bgcolor="#3AAFAB">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
     {% endfor %}
-  </p>
-  <p>
-    {{ form.password.label }}<br>
-    {{ form.password }}
-    {% for error in form.password.errors %}
-    <span style="color: red">{{ error }}</span>
-    {% endfor %}
-  </p>
-  <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-  <p>{{ form.submit() }}</p>
-  <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a> </p>
-</form>
-{% endblock %}
+</ul>
+{% endif %}
+{% endwith %}
+<div class="container">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <ul class="flex-outer">
+            <li>
+                <label for="username">{{ form.username.label }}</label>
+                <div id="username">{{ form.username }}</div>
+                {% for error in form.username.errors %}
+                <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </li>
+            <li>
+                <label for="password">{{ form.password.label }}</label>
+                <div id="password">{{ form.password }}</div>
+                {% for error in form.password.errors %}
+                <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </li>
+            <li>
+                <button type="submit">{{ form.submit() }}</button>
+            </li>
+            <li>
+                <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+            </li>
+        </ul>
+    </form>
+</div>
+</body>
+</html>
