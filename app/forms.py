@@ -4,8 +4,6 @@ from wtforms.validators import DataRequired, EqualTo, ValidationError
 
 import app.db as new_db
 
-from app import routes
-
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -28,8 +26,10 @@ class RegisterForm(FlaskForm):
 
 
 class AddDepartmentForm(FlaskForm):
+    dep_choices = new_db.list_department()
+    dep_choices.insert(0, (0, "Haven't parent"))
     department_name = StringField('Department name', validators=[DataRequired()])
-    parent_id = IntegerField('Parent')
+    parent_id = SelectField('Parent', choices=dep_choices)
     submit = SubmitField('Add department')
 
 

@@ -126,10 +126,16 @@ def add_position() -> Response:
     """
     form = AddPositionForm()
     if form.validate_on_submit():
-        new_db.create_update_request('INSERT INTO position (position_name, description)'
-                                     'VALUES (?, ?)',
-                                     (form.position_name.data, form.description.data))
-        flash('You successful add position')
+        if form.validate_on_submit():
+            if new_db.get_db().execute(
+                    'SELECT id FROM position WHERE position_name = ?', (str(form.position_name.data),)
+            ).fetchone() is not None:
+                flash('Please use a different position_name')
+            else:
+                new_db.create_update_request('INSERT INTO position (position_name, description)'
+                                             'VALUES (?, ?)',
+                                             (form.position_name.data, form.description.data))
+                flash('You successful add position')
     return render_template('add view/add_delete_new_position.html', form=form)
 
 
@@ -153,13 +159,22 @@ def add_department() -> Response:
     Add department to Department table on db
     :return: template
     """
+    # TODO: more request
     dep = new_db.select_requests('SELECT * FROM department')
     form = AddDepartmentForm()
     if form.validate_on_submit():
-        new_db.create_update_request('INSERT INTO department (department_name, parent_id)'
-                                     'VALUES (?, ?)',
-                                     (form.department_name.data, form.parent_id.data))
-        flash('You successful add department')
+        if new_db.get_db().execute(
+                'SELECT id FROM department WHERE department_name = ?', (str(form.department_name.data),)
+        ).fetchone() is not None:
+            flash('Please use a different department name')
+        else:
+            convert = form.parent_id.data
+            if str(convert) == '0':
+                convert = None
+            new_db.create_update_request('INSERT INTO department (department_name, parent_id)'
+                                         'VALUES (?, ?)',
+                                         (form.department_name.data, convert))
+            flash('You successful add department')
     return render_template('add view/add_delete_new_department.html', form=form, department=dep)
 
 
@@ -237,10 +252,12 @@ def update_employee(employee_id: int) -> Response:
         if new_db.get_db().execute('SELECT employee_id FROM count_dep_pos_employee WHERE employee_id = ?',
                                    (employee_id, )).fetchone() is not None:
             count_add(value_position, value_department, employee_id, form)
+            flash('You update employee')
         else:
             new_db.create_update_request('INSERT INTO count_dep_pos_employee (employee_id)'
                                          'VALUES (?)', (employee_id, ))
             count_add(value_position, value_department, employee_id, form)
+            flash('You update employee')
     return render_template('add view/update_employee.html', form=form)
 
 
@@ -253,6 +270,17 @@ def list_positions() -> Response:
     """
     position = new_db.select_requests('SELECT * FROM position')
     return render_template('list view/list_position.html', position=position)
+
+
+@app.route('/departments')
+@login_required
+def list_departments() -> Response:
+    """
+    View list of all positions
+    :return: template
+    """
+    department = new_db.select_requests('SELECT * FROM department')
+    return render_template('list view/list_department.html', department=department)
 
 
 @app.route('/employees')
@@ -276,20 +304,21 @@ def list_employees() -> Response:
     return render_template('list view/list_employees.html', year=date.today(), result_join=result_join)
 
 
-@app.route('/department/stats')
-def statistic_department() -> Response:
-    """
-    Statistic about department and count working people in it
-    :return:
-    """
-    form = DepartmentViewForm()
-    select = new_db.select_requests('WITH RECURSIVE CTE_TEST(id, department_name, parent_id, LevelParent)'
-                                    ' AS (select id, department_name, parent_id, 0 as LevelParent'
-                                    ' from department where parent_id IS NULL'
-                                    ' union all'
-                                    ' select t1.id, t1.department_name, t1.parent_id, LevelParent + 1'
-                                    ' from department t1'
-                                    ' join CTE_TEST t2 on t1.parent_id=t2.id)'
-                                    ' select * from CTE_TEST order by LevelParent')
-
-    return render_template('list view/list_department.html', department=select, form=form)
+# @app.route('/department/stats', methods=['GET', 'POST'])
+# def statistic_department() -> Response:
+#     """
+#     Statistic about department and count working people in it
+#     :return:
+#     """
+#     form = DepartmentViewForm()
+#     level_parent = 0
+#     select = new_db.get_db().execute('WITH RECURSIVE CTE_TEST(id, department_name, parent_id, LevelParent)'
+#                                      ' AS (select id, department_name, parent_id, 0 as LevelParent'
+#                                      ' from department where parent_id IS NULL'
+#                                      ' union all'
+#                                      ' select t1.id, t1.department_name, t1.parent_id, LevelParent + 1'
+#                                      ' from department t1'
+#                                      ' join CTE_TEST t2 on t1.parent_id=t2.id)'
+#                                      ' select * from CTE_TEST WhERE LevelParent = ?', (level_parent + 1, )).fetchall()
+#
+#     return render_template('list view/list_department.html', department=select, form=form)

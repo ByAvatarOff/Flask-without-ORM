@@ -57,3 +57,9 @@
   letter-spacing: .09em;
   border-radius: 2px;
 }
+
+span {
+  position: absolute;
+  top: 0;
+  left: 400px;
+}

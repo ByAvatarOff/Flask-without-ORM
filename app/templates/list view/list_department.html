@@ -1,30 +1,25 @@
 {% extends 'main.html' %}
 {% block static %}
-<link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
 {% endblock %}
-
 {% block content %}
-<div class="container">
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <ul class="flex-outer">
-            <li>
-                <label for="first-name">{{ form.department_id.label }}</label>
-                <div id="first-name">{{ form.department_id }}</div>
-                {% for error in form.department_id.errors %}
-                <span style="color: red">{{ error }}</span>
-                {% endfor %}
-            </li>
-            <li>
-                <button type="submit">{{ form.submit() }}</button>
-            </li>
-        </ul>
-    </form>
-</div>
-{% for row in department %}
-{{ row['id'] }}
-{{ row['department_name'] }}
-{{ row['parent_id'] }}
-{{ row['LevelParent'] }}<br>
-{% endfor %}
+<table class="resp-tab">
+    <thead>
+    <tr>
+        <th>department_name</th>
+        <th>current position</th>
+    </tr>
+    </thead>
+    {% for dep in department %}
+    <tbody>
+    <tr>
+        <td>{{ dep['department_name'] }}</td>
+        <td style="width: 70px;">
+            <button class="test"><a href="{{ url_for('delete_department', department_id=dep['id']) }}">Удалить</a></button>
+        </td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
 {% endblock %}

@@ -77,7 +77,7 @@ def list_position() -> typing.List[typing.Tuple[int, int]]:
         return pos_choices
 
 
-def list_department() -> typing.List[typing.Tuple[int, int]]:
+def list_department() -> typing.List[typing.Tuple[int, str]]:
     """
     Return list of tuple with info about department_name and id
     :return:

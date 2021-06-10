@@ -1,17 +1,15 @@
-//$(document).ready(function() {
+//function test (employee_id) {
 //     $('form').on('submit', function(event) {
 //       $.ajax({
 //          data : {
-//             fio : form.fio.data,
-//             position_id: form.position_id.data,
-//             department_id: form.department_id.data,
+//             employee_id : employee_id,
 //                 },
 //             type : 'POST',
-//             url : '/employee/add'
+//             url : '/employee/add/employee_id'
 //            })
 //        .done(function(data) {
 //          $('#output').text(data.output).show();
 //      });
 //      event.preventDefault();
 //      });
-//});
+//};

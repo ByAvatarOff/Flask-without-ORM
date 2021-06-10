@@ -14,28 +14,24 @@
     {% endblock %}
 </head>
 <body>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
 <ul id="navbar">
   <li><a href="{{ url_for('index') }}">Main</a></li>
   <li><a href="{{ url_for('add_employee') }}">Add employee</a></li>
   <li><a href="{{ url_for('add_department') }}">Add department</a></li>
   <li><a href="{{ url_for('add_position') }}">Add position</a></li>
+  <li><a href="{{ url_for('list_employees') }}">List employees</a></li>
+  <li><a href="{{ url_for('list_positions') }}">List positions</a></li>
+  <li><a href="{{ url_for('list_departments') }}">List departments</a></li>
     <li><a href="{{ url_for('logout') }}">Logout</a></li>
 </ul>
 {% block content %}
-<p class="index">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-    laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-    deserunt mollit anim id est laborum.</p>
 {% endblock %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<p style="text-align: center;">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
 </body>
 </html>
