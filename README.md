@@ -11,8 +11,12 @@
 - `/department`
 - `/department/add`
 - `/department/delete/<int:department_id>`
+- `/departments`
 - `/employees`
 - `/employee/delete/<int:employee_id>`
 - `/employee/update/<int:employee_id>`
-- `/department/stats`
+
+## it wasn't done:
+### - Ajax request
+### - Recursive query for selecting the number of employees working in a department including child departments
 
